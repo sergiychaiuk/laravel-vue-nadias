@@ -10,11 +10,14 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        $categories = Category::orderBy('display_order')->get();
+        return view('admin.categories.index', [
+            'categories' => $categories,
+        ]);
     }
 
     /**
