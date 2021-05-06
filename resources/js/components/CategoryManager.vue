@@ -23,6 +23,9 @@ export default {
             categories: _.cloneDeep(this.initialCategories),
         };
     },
+    created: function () {
+        axios.post('/api/categories/upsert');
+    },
     methods: {
         addCategory: function () {
             this.categories.push({
