@@ -1,5 +1,5 @@
 <template>
-    <form>
+    <form @submit.prevent="saveCategories">
         <a @click="addCategory">+ Add Category</a>
         <div v-for="(category, index) in categories" :key="category.id">
             <input type="text" v-model="category.name" :ref="category.name">
@@ -11,6 +11,8 @@
             </div>
             <hr>
         </div>
+        <button type="submit">Save</button>
+        <div>{{ feedback }}</div>
     </form>
 </template>
 
@@ -21,10 +23,8 @@ export default {
     data: function () {
         return {
             categories: _.cloneDeep(this.initialCategories),
+            feedback: '',
         };
-    },
-    created: function () {
-        axios.post('/api/categories/upsert');
     },
     methods: {
         addCategory: function () {
@@ -40,8 +40,23 @@ export default {
                 this.$refs[''][0].focus();
             });
         },
+        saveCategories: function () {
+            axios.post('/api/categories/upsert', {
+                categories: this.categories
+            })
+            .then((response) => {
+                if (response.data.success) {
+                    this.feedback = 'Changes save.';
+                    this.categories = response.data.categories;
+                }
+            });
+        },
         removeCategory: function (index) {
             if (confirm('Are you sure?')) {
+                let id = this.categories[index].id;
+                if (id > 0) {
+                    axios.delete('/api/categories/' + id);
+                }
                 this.categories.splice(index, 1);
             }
         },
