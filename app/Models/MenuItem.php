@@ -9,5 +9,5 @@ class MenuItem extends Model
 {
     use HasFactory;
 
-    //protected $guarded = [];
+    protected $guarded = [];
 }
