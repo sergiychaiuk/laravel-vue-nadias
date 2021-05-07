@@ -38,7 +38,14 @@ export default {
     },
     methods: {
         save() {
-
+            axios.post('/api/menu-items/add', this.item)
+                .then(res => {
+                    this.$router.push('/');
+                })
+                .catch(error => {
+                    let messages = Object.values(error.response.data.errors);
+                    this.errors = [].concat.apply([], messages);
+                });
         }
     },
 }

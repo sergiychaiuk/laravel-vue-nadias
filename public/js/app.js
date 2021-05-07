@@ -2019,7 +2019,16 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    save: function save() {}
+    save: function save() {
+      var _this = this;
+
+      axios.post('/api/menu-items/add', this.item).then(function (res) {
+        _this.$router.push('/');
+      })["catch"](function (error) {
+        var messages = Object.values(error.response.data.errors);
+        _this.errors = [].concat.apply([], messages);
+      });
+    }
   }
 });
 
