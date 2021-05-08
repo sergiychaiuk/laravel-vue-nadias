@@ -1,8 +1,11 @@
 <template>
     <div>
         <h1>Menu Editor</h1>
-        <router-link :to="{ name: 'categories' }">Categories</router-link>
-        <router-link :to="{ name: 'add-item' }">Add Item</router-link>
+
+        <router-link :to="{name: 'categories'}">Categories</router-link>
+        <router-link :to="{name: 'items'}">Items</router-link>
+        <router-link :to="{name: 'add-item'}">Add Item</router-link>
+
         <router-view :initial-categories="categories"></router-view>
     </div>
 </template>
@@ -11,6 +14,7 @@
 import VueRouter from 'vue-router';
 import CategoryManager from './CategoryManager';
 import MenuItem from './MenuItem';
+import MenuItemList from './MenuItemList';
 
 export default {
     name: "MenuEditor",
@@ -22,21 +26,32 @@ export default {
             {
                 path: '/categories',
                 name: 'categories',
-                component: CategoryManager,
+                component: CategoryManager
             },
             {
                 path: '/',
-                redirect: { name: 'categories' },
+                redirect: {name: 'categories'}
+            },
+            {
+                path: '/items',
+                name: 'items',
+                component: MenuItemList
             },
             {
                 path: '/add-item',
                 name: 'add-item',
+                component: MenuItem
+            },
+            {
+                path: '/edit-item/:id',
+                name: 'edit-item',
                 component: MenuItem,
+                props: true
             },
             {
                 path: '*',
-                redirect: '/',
-            },
+                redirect: '/'
+            }
         ]
     })
 }

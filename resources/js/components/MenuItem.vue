@@ -33,7 +33,7 @@ export default {
     components: {
         dropZone: vue2Dropzone,
     },
-    props: ['initial-categories'],
+    props: ['initialCategories'],
     data() {
         return {
             dropzoneOptions: {
