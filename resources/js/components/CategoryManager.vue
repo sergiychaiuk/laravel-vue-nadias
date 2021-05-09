@@ -2,12 +2,12 @@
     <form @submit.prevent="saveCategories">
         <a @click="addCategory">+ Add Category</a>
         <div v-for="(category, index) in categories" :key="category.id">
-            <input type="text" v-model="category.name" :ref="category.name">
+            <input type="text" :value="category.name" @input="update($event, 'name', index)" :ref="category.name">
             <a @click="removeCategory(index)" class="remove">delete</a>
             <div>
                 <img v-if="category.image" :src="`/images/${category.image}`" alt="">
                 <label v-else>Image: </label>
-                <input type="text" v-model.lazy="category.image">
+                <input type="text" :value="category.image" @change="update($event, 'image', index)">
             </div>
             <hr>
         </div>
@@ -31,7 +31,7 @@ export default {
     },
     methods: {
         addCategory: function () {
-            this.categories.push({
+            this.$store.commit('ADD_CATEGORY', {
                 id: 0,
                 name: '',
                 image: '',
@@ -63,6 +63,13 @@ export default {
                 this.categories.splice(index, 1);
             }
         },
+        update($event, property, index) {
+            this.$store.commit('UPDATE_CATEGORY', {
+                index,
+                property,
+                value: $event.target.value
+            })
+        }
     },
 }
 </script>
