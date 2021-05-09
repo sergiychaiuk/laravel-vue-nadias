@@ -13,6 +13,7 @@
                 <option v-for="cat in initialCategories" :value="cat.id" :key="cat.id">{{cat.name}}</option>
             </select>
         </div>
+        <img v-if="id && item.image" :src="`/storage/images/${item.image}`" width="200">
         <drop-zone
             :options="dropzoneOptions"
             id="dz"
@@ -33,7 +34,7 @@ export default {
     components: {
         dropZone: vue2Dropzone,
     },
-    props: ['initialCategories'],
+    props: ['initialCategories', 'id'],
     data() {
         return {
             dropzoneOptions: {
@@ -56,13 +57,23 @@ export default {
             errors: [],
         };
     },
+    created() {
+        if (this.id) {
+            axios.get('/api/menu-items/' + this.id)
+                .then(res => this.item = res.data);
+        }
+    },
     methods: {
         save() {
             let files = this.$refs.dropzone.getAcceptedFiles();
             if (files.length > 0 && files[0].filename) {
                 this.item.image = files[0].filename;
             }
-            axios.post('/api/menu-items/add', this.item)
+            let url = '/api/menu-items/add';
+            if (this.id) {
+                url = '/api/menu-items/' + this.id;
+            }
+            axios.post(url, this.item)
                 .then(res => {
                     this.$router.push('/');
                 })

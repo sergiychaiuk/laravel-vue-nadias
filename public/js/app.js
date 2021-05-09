@@ -2025,6 +2025,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2032,7 +2033,7 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     dropZone: (vue2_dropzone__WEBPACK_IMPORTED_MODULE_0___default())
   },
-  props: ['initialCategories'],
+  props: ['initialCategories', 'id'],
   data: function data() {
     return {
       dropzoneOptions: {
@@ -2055,9 +2056,18 @@ __webpack_require__.r(__webpack_exports__);
       errors: []
     };
   },
+  created: function created() {
+    var _this = this;
+
+    if (this.id) {
+      axios.get('/api/menu-items/' + this.id).then(function (res) {
+        return _this.item = res.data;
+      });
+    }
+  },
   methods: {
     save: function save() {
-      var _this = this;
+      var _this2 = this;
 
       var files = this.$refs.dropzone.getAcceptedFiles();
 
@@ -2065,11 +2075,17 @@ __webpack_require__.r(__webpack_exports__);
         this.item.image = files[0].filename;
       }
 
-      axios.post('/api/menu-items/add', this.item).then(function (res) {
-        _this.$router.push('/');
+      var url = '/api/menu-items/add';
+
+      if (this.id) {
+        url = '/api/menu-items/' + this.id;
+      }
+
+      axios.post(url, this.item).then(function (res) {
+        _this2.$router.push('/');
       })["catch"](function (error) {
         var messages = Object.values(error.response.data.errors);
-        _this.errors = [].concat.apply([], messages);
+        _this2.errors = [].concat.apply([], messages);
       });
     }
   }
@@ -38372,6 +38388,12 @@ var render = function() {
           2
         )
       ]),
+      _vm._v(" "),
+      _vm.id && _vm.item.image
+        ? _c("img", {
+            attrs: { src: "/storage/images/" + _vm.item.image, width: "200" }
+          })
+        : _vm._e(),
       _vm._v(" "),
       _c("drop-zone", {
         ref: "dropzone",
