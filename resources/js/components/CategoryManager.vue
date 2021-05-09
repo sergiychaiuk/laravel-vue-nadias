@@ -19,12 +19,15 @@
 <script>
 export default {
     name: "CategoryManager",
-    props: ['initialCategories'],
     data: function () {
         return {
-            categories: _.cloneDeep(this.initialCategories),
             feedback: '',
         };
+    },
+    computed: {
+        categories() {
+            return this.$store.state.categories;
+        }
     },
     methods: {
         addCategory: function () {
