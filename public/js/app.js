@@ -2028,6 +2028,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 
+
+function newItem() {
+  return {
+    name: '',
+    price: 0.00,
+    image: '',
+    category_id: '',
+    description: ''
+  };
+}
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "MenuItem",
   components: {
@@ -2046,13 +2057,7 @@ __webpack_require__.r(__webpack_exports__);
           file.filename = res;
         }
       },
-      item: {
-        name: '',
-        price: 0.00,
-        image: '',
-        category_id: '',
-        description: ''
-      },
+      item: newItem(),
       errors: []
     };
   },
@@ -2064,6 +2069,10 @@ __webpack_require__.r(__webpack_exports__);
         return _this.item = res.data;
       });
     }
+  },
+  beforeRouteLeave: function beforeRouteLeave(to, from, next) {
+    this.item = newItem();
+    next();
   },
   methods: {
     save: function save() {

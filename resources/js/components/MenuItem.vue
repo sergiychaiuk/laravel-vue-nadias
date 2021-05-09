@@ -29,6 +29,16 @@
 import vue2Dropzone from 'vue2-dropzone';
 import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 
+function newItem() {
+    return {
+        name: '',
+        price: 0.00,
+        image: '',
+        category_id: '',
+        description: '',
+    };
+}
+
 export default {
     name: "MenuItem",
     components: {
@@ -47,13 +57,7 @@ export default {
                     file.filename = res;
                 }
             },
-            item: {
-                name: '',
-                price: 0.00,
-                image: '',
-                category_id: '',
-                description: '',
-            },
+            item: newItem(),
             errors: [],
         };
     },
@@ -62,6 +66,10 @@ export default {
             axios.get('/api/menu-items/' + this.id)
                 .then(res => this.item = res.data);
         }
+    },
+    beforeRouteLeave(to, from, next) {
+        this.item = newItem();
+        next();
     },
     methods: {
         save() {
