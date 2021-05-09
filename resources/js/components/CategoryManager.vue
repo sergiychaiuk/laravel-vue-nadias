@@ -19,14 +19,12 @@
 <script>
 export default {
     name: "CategoryManager",
-    data: function () {
-        return {
-            feedback: '',
-        };
-    },
     computed: {
         categories() {
             return this.$store.state.categories;
+        },
+        feedback() {
+            return this.$store.state.feedback;
         }
     },
     methods: {
@@ -44,23 +42,11 @@ export default {
             });
         },
         saveCategories: function () {
-            axios.post('/api/categories/upsert', {
-                categories: this.categories
-            })
-            .then((response) => {
-                if (response.data.success) {
-                    this.feedback = 'Changes save.';
-                    this.categories = response.data.categories;
-                }
-            });
+            this.$store.dispatch('saveCategories');
         },
         removeCategory: function (index) {
             if (confirm('Are you sure?')) {
-                let id = this.categories[index].id;
-                if (id > 0) {
-                    axios.delete('/api/categories/' + id);
-                }
-                this.categories.splice(index, 1);
+                this.$store.dispatch('removeCategory', index);
             }
         },
         update($event, property, index) {

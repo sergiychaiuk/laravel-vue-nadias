@@ -1865,14 +1865,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "CategoryManager",
-  data: function data() {
-    return {
-      feedback: ''
-    };
-  },
   computed: {
     categories: function categories() {
       return this.$store.state.categories;
+    },
+    feedback: function feedback() {
+      return this.$store.state.feedback;
     }
   },
   methods: {
@@ -1892,26 +1890,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     saveCategories: function saveCategories() {
-      var _this2 = this;
-
-      axios.post('/api/categories/upsert', {
-        categories: this.categories
-      }).then(function (response) {
-        if (response.data.success) {
-          _this2.feedback = 'Changes save.';
-          _this2.categories = response.data.categories;
-        }
-      });
+      this.$store.dispatch('saveCategories');
     },
     removeCategory: function removeCategory(index) {
       if (confirm('Are you sure?')) {
-        var id = this.categories[index].id;
-
-        if (id > 0) {
-          axios["delete"]('/api/categories/' + id);
-        }
-
-        this.categories.splice(index, 1);
+        this.$store.dispatch('removeCategory', index);
       }
     },
     update: function update($event, property, index) {
@@ -2276,16 +2259,17 @@ vue__WEBPACK_IMPORTED_MODULE_0__.default.use(vuex__WEBPACK_IMPORTED_MODULE_1__.d
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vuex__WEBPACK_IMPORTED_MODULE_1__.default.Store({
   state: {
     categories: [],
-    items: []
+    items: [],
+    feedback: ''
   },
   mutations: {
     SET_CATEGORIES: function SET_CATEGORIES(state, categories) {
       state.categories = categories;
     },
-    ADD_CATEGORY: function ADD_CATEGORY(state, categories) {
-      state.categories.push(categories);
+    ADD_CATEGORY: function ADD_CATEGORY(state, category) {
+      state.categories.push(category);
     },
-    REMOVE_CATEGORIES: function REMOVE_CATEGORIES(state, index) {
+    REMOVE_CATEGORY: function REMOVE_CATEGORY(state, index) {
       state.categories.splice(index, 1);
     },
     UPDATE_CATEGORY: function UPDATE_CATEGORY(state, _ref) {
@@ -2293,6 +2277,39 @@ vue__WEBPACK_IMPORTED_MODULE_0__.default.use(vuex__WEBPACK_IMPORTED_MODULE_1__.d
           property = _ref.property,
           value = _ref.value;
       state.categories[index][property] = value;
+    },
+    SET_FEEDBACK: function SET_FEEDBACK(state, feedback) {
+      state.feedback = feedback;
+    }
+  },
+  actions: {
+    saveCategories: function saveCategories(_ref2) {
+      var commit = _ref2.commit,
+          state = _ref2.state;
+      axios.post('/api/categories/upsert', {
+        categories: state.categories
+      }).then(function (res) {
+        if (res.data.success) {
+          commit('SET_FEEDBACK', 'Changes saved.');
+          setTimeout(function () {
+            return commit('SET_FEEDBACK', '');
+          }, 2000);
+          commit('SET_CATEGORIES', res.data.categories);
+        }
+      });
+    },
+    removeCategory: function removeCategory(_ref3, index) {
+      var commit = _ref3.commit,
+          state = _ref3.state;
+      var id = state.categories[index].id;
+
+      if (id > 0) {
+        return axios["delete"]('/api/categories/' + id).then(function (res) {
+          return commit('REMOVE_CATEGORY', index);
+        });
+      }
+
+      commit('REMOVE_CATEGORY', index);
     }
   }
 }));
