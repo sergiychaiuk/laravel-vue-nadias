@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class CategoryController extends Controller
 {
@@ -26,6 +27,12 @@ class CategoryController extends Controller
         $this->authorize('manage', 'App\Models\Category');
         $categories = $request->post('categories');
         foreach ($categories as $cat) {
+            //////////////////////////
+//            if (isset($cat['created_at']) && $cat['created_at']) {
+//                $cat['created_at'] = Carbon::createFromFormat('Y-m-d\TH:i:s+', $cat['created_at']);
+//                $cat['updated_at'] = Carbon::createFromFormat('Y-m-d\TH:i:s+', $cat['updated_at']);
+//            }
+            //////////////////////////
             if ($cat['id']) {
                 Category::where('id', $cat['id'])->update($cat);
             } else {

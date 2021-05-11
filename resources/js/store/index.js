@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         categories: [],
-        items: [],
+        items: {},
         feedback: ''
     },
     mutations: {
@@ -36,7 +36,10 @@ export default new Vuex.Store({
                         setTimeout(() => commit('SET_FEEDBACK', ''), 2000);
                         commit('SET_CATEGORIES', res.data.categories);
                     }
-                });
+                })
+                // .catch((err) => {
+                //     console.log(err.response.data);
+                // });
         },
         removeCategory({commit, state}, index) {
             let id = state.categories[index].id;
